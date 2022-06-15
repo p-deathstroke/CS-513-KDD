@@ -1,0 +1,54 @@
+---
+title: "HW_08"
+author: "Preet Dabhi"
+date: '2022-04-16'
+output: pdf_document
+---
+
+```{R}
+#################################################
+#  Company    : Stevens 
+#  Project    : HW_08 
+#  Purpose    : hclust and k-means
+#  First Name : Preet
+#  Last Name  : Dabhi
+#  Id			    : 10459151
+#  Date       : 04/16/2022
+
+## Delete all the objects from your R- environment.
+#################################################
+
+#8.1
+rm(list = ls())
+
+dataSet<-read.csv("D:/SEM 3/CS 513/HW_08/wisc_bc_ContinuousVar.csv",na.strings = '?')
+View(dataSet)
+summary(dataSet)
+table(dataSet$diagnosis)
+
+#factoring
+dataSet<-na.omit(dataSet)
+dataSet<-dataSet[-1]
+cancerdist<-dist(dataSet[,-1])
+hclustresult<-hclust(cancerdist)
+plot(hclustresult)
+hclust2<-cutree(hclustresult,2)
+table(hclust2,dataSet[,1])
+
+#8.2
+rm(list=ls())
+
+#load the file
+dataSet<-read.csv("D:/SEM 3/CS 513/HW_08/wisc_bc_ContinuousVar.csv",na.strings = '?')
+View(dataSet)
+summary(dataSet)
+table(dataSet$diagnosis)
+
+#To factor the data set
+dataSet<-na.omit(dataSet)
+dataSet<-dataSet[-1]
+k_means<- kmeans(dataSet[,-1],2,nstart = 10)
+k_means$cluster
+table(k_means$cluster,dataSet[,1])
+
+```

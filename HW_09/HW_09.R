@@ -1,0 +1,39 @@
+#################################################
+#  Company    : Stevens 
+#  Project    : HW_09 
+#  Purpose    : SVM
+#  First Name : Preet
+#  Last Name  : Dabhi
+#  Id			    : 10459151
+#  Date       : 04/25/2022
+
+## Delete all the objects from your R- environment.
+#################################################
+
+rm(list = ls())
+
+dataSet<-read.csv("D:/SEM 3/CS 513/HW_09/wisc_bc_ContinuousVar.csv",na.strings = '?')
+
+#delteting the first row 
+dataset1 = subset(dataSet, select = -c(id) )
+
+#Fasctorising the diagnoasis column 
+dataset1$diagnosis <- factor(dataset1$diagnosis, levels = c('M','B'),labels = c(1,2))
+
+#Splitting the dataet into training and testing 
+index<-sort(sample(nrow(dataSet),as.integer(.70*nrow(dataSet))))
+training<-dataset1[index,]
+testing<-dataset1[-index,]
+
+#Perfroming SVM 
+library(e1071)
+svm.model <- svm( diagnosis~ ., data =training  )
+svm.pred <- predict(svm.model,  testing )
+
+#Confusion matrix 
+conf_matrix <- table(predict_svm=svm.pred,class=testing$diagnosis)
+print(conf_matrix)
+
+#Accuracy 
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(conf_matrix)

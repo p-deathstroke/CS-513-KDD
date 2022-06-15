@@ -1,0 +1,63 @@
+#################################################
+#  Company    : Stevens 
+#  Project    : HW_04 
+#  Purpose    : Perform Naïve Bayes Classification
+#  First Name : Preet
+#  Last Name  : Dabhi
+#  Id			    : 10459151
+#  Date       : 03/6/2022
+
+## Delete all the objects from your R- environment.
+#################################################
+
+rm(list=ls())
+
+#Import package 'e1071' for Naive Bayes Classifier and class package
+#install.packages("e1071")
+#install.packages(class)
+library(e1071)
+library(class)
+
+dataFrame <- read.csv("D:/SEM 3/CS 513/HW_02/breast-cancer-wisconsin.csv",header=TRUE, sep=",")
+  summary(dataFrame)
+
+#Here we can see that by running summary on the dataframe F6 column there are some missing values in it, which we omit
+n <- as.numeric(as.character(dataFrame$F6))
+dataFrame$F6 <- n
+
+#Remove the rows with missing values 
+dataFrame <- na.omit(dataFrame)
+View(dataFrame)
+
+#Replacing class column 2 and 4 with Benign and Malignant
+dataFrame$Class<- factor(dataFrame$Class , levels = c("2","4") , labels = c("Benign","Malignant"))
+is.factor(dataFrame$Class)
+
+newData<- dataFrame[2:11]
+View(newData)
+
+#70% of the sample size
+sample_size <- floor(0.70 * nrow(newData))
+
+#Set the seed to make your partition reproducible
+set.seed(123)
+trainData <- sample(seq_len(nrow(newData)), size = sample_size)
+
+#Loading 70% Breast cancer record in training dataset
+training <- newData[trainData, ]
+
+#Loading 30% Breast cancer in test dataset
+test <- newData[-trainData, ]
+
+#Implementing NaiveBayes
+naive_bayes_model<- naiveBayes(Class ~ ., data = training)
+  
+#Predicting target class for the Validation set
+naive_bayes_predict <- predict(naive_bayes_model, test)
+
+conf_matrix <- table(predict_nb=naive_bayes_predict,class=test$Class)
+print(conf_matrix)
+
+#Output of Naive Bayes Classifier
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(conf_matrix)
